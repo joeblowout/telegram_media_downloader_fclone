@@ -145,7 +145,7 @@ async def download_media(
     client: pyrogram.client.Client,
     message: pyrogram.types.Message,
     media_types: List[str],
-    file_formats: dict
+    file_formats: dict,
 ):
     """
     Download media from Telegram.
@@ -194,7 +194,7 @@ async def download_media(
                             message, file_name=file_name
                         )
                         # pylint: disable = C0301
-                        download_path = manage_duplicate_file(download_path)  # type: ignoreMmedia 
+                        download_path = manage_duplicate_file(download_path)  # type: ignore
                     else:
                         download_path = await client.download_media(
                             message, file_name=file_name
