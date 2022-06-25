@@ -201,25 +201,25 @@ async def download_media(
                         )
                     if download_path:
                         logger.info(f"Message ID {message.message_id} downloaded - %s", download_path)
-                    DOWNLOADED_IDS.append(message.message_id)
-                    #upload
-                    # datetime_dir_name = message.date.strftime("%Y_%m")
-                    datetime_dir_name = dt.fromtimestamp(message.date).strftime("%Y_%m")
-                    logger.info(f'message time is: {datetime_dir_name}')
-                    #augment to include message id
-                    source = os.path.dirname(file_name)
-                    base = os.path.basename(file_name)
-                    file_name_id = f"{message.message_id}" + ' - ' + base
-                    logger.info(f'augmented file name: {file_name_id}')
-                    chat_title = message.chat.title
-                    chat_title=validate_title(chat_title)
-                    logger.info(f'chat_title is: {chat_title}')
-                    upload=subprocess.run(f"fclone moveto '{file_name}' \
-                        '{drive_name}:{{{drive_id}}}/{chat_title}/{datetime_dir_name}\
-                        /{file_name_id}'\
-                        --log-file=rclone.log --log-level=INFO", shell=True
-                    )
-                    logger.info(f'Message ID {message.message_id} upload status: {upload.returncode}')
+                        DOWNLOADED_IDS.append(message.message_id)
+                        #upload
+                        # datetime_dir_name = message.date.strftime("%Y_%m")
+                        datetime_dir_name = dt.fromtimestamp(message.date).strftime("%Y_%m")
+                        logger.info(f'message time is: {datetime_dir_name}')
+                        #augment to include message id
+                        source = os.path.dirname(file_name)
+                        base = os.path.basename(file_name)
+                        file_name_id = f"{message.message_id}" + ' - ' + base
+                        logger.info(f'augmented file name: {file_name_id}')
+                        chat_title = message.chat.title
+                        chat_title=validate_title(chat_title)
+                        logger.info(f'chat_title is: {chat_title}')
+                        upload=subprocess.run(f"fclone moveto '{file_name}' \
+                            '{drive_name}:{{{drive_id}}}/{chat_title}/{datetime_dir_name}\
+                            /{file_name_id}'\
+                            --log-file=rclone.log --log-level=INFO", shell=True
+                        )
+                        logger.info(f'Message ID {message.message_id} upload status: {upload.returncode}')
                     if sleep_interval:
                         time.sleep(sleep_interval)
             break
@@ -341,7 +341,7 @@ async def begin_import(config: dict, pagination_limit: int) -> dict:
     if config["sleep_interval"]:
         sleep_interval = config["sleep_interval"]
     else:
-        sleep_interval=20
+        sleep_interval=0
 
     # chat_title = config["chat_title"]
 
