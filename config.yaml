@@ -3,7 +3,7 @@ api_id: your_api_id
 chat_id: telegram_chat_id
 drive_id: google drive url (only google drive cloud service is supported)
 drive_name: fclone drive remote
-sleep_interval: optional, defaults to 20 if left empty
+sleep_interval: optional, defaults to 0 if left empty
 last_read_message_id: 0
 ids_to_retry: []
 media_types:
