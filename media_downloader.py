@@ -1,7 +1,8 @@
 """Downloads media from telegram."""
 import asyncio
 import logging
-import os
+import os, sys, subprocess, re
+import time
 from datetime import datetime as dt
 from typing import List, Optional, Tuple, Union
 
@@ -140,7 +141,7 @@ async def download_media(
     client: pyrogram.client.Client,
     message: pyrogram.types.Message,
     media_types: List[str],
-    file_formats: dict,
+    file_formats: dict
 ):
     """
     Download media from Telegram.
@@ -189,14 +190,32 @@ async def download_media(
                             message, file_name=file_name
                         )
                         # pylint: disable = C0301
-                        download_path = manage_duplicate_file(download_path)  # type: ignore
+                        download_path = manage_duplicate_file(download_path)  # type: ignoreMmedia 
                     else:
                         download_path = await client.download_media(
                             message, file_name=file_name
                         )
                     if download_path:
-                        logger.info("Media downloaded - %s", download_path)
+                        logger.info(f"Message ID {message.message_id} downloaded - %s", download_path)
                     DOWNLOADED_IDS.append(message.message_id)
+                    #upload
+                    # datetime_dir_name = message.date.strftime("%Y_%m")
+                    datetime_dir_name = dt.fromtimestamp(message.date).strftime("%Y_%m")
+                    logger.info(f'message time is: {datetime_dir_name}')
+                    #augment to include message id
+                    source = os.path.dirname(file_name)
+                    base = os.path.basename(file_name)
+                    file_name_id = f"{message.message_id}" + ' - ' + base
+                    logger.info(f'augmented file name: {file_name_id}')
+                    chat_title = message.chat.title
+                    upload=subprocess.run(f"fclone moveto '{file_name}' \
+                        '{drive_name}:{{{drive_id}}}/{chat_title}/{datetime_dir_name}\
+                        /{file_name_id}'\
+                        --log-file=rclone.log --log-level=INFO", shell=True
+                    )
+                    logger.info(f'Message ID {message.message_id} upload status: {upload.returncode}')
+                    if sleep_interval:
+                        time.sleep(sleep_interval)
             break
         except pyrogram.errors.exceptions.bad_request_400.BadRequest:
             logger.warning(
@@ -310,6 +329,16 @@ async def begin_import(config: dict, pagination_limit: int) -> dict:
         api_id=config["api_id"],
         api_hash=config["api_hash"],
     )
+    global drive_name, drive_id, chat_title, sleep_interval
+    drive_name = config["drive_name"]
+    drive_id = config["drive_id"]
+    if config["sleep_interval"]:
+        sleep_interval = config["sleep_interval"]
+    else:
+        sleep_interval=20
+
+    # chat_title = config["chat_title"]
+
     await client.start()
     last_read_message_id: int = config["last_read_message_id"]
     messages_iter = client.iter_history(
