@@ -1,6 +1,6 @@
 
 <h1 align="center">Telegram Media Downloader Fclone</h1>
-Credits to <a href="https://github.com/snow922841/telegram_channel_downloader">snow922841</a> for move to gd features
+<h1 align="center">Credits to <a href="https://github.com/snow922841/telegram_channel_downloader">snow922841</a> for move to gd features</h1>
 
 <p align="center">
 <a href="https://github.com/Dineshkarthik/telegram_media_downloader/actions"><img alt="Unittest" src="https://github.com/Dineshkarthik/telegram_media_downloader/workflows/Unittest/badge.svg"></a>
