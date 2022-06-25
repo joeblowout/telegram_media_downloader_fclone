@@ -30,6 +30,10 @@ THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 FAILED_IDS: list = []
 DOWNLOADED_IDS: list = []
 
+def validate_title(title):
+    r_str = r"[\/\\\:\*\?\"\<\>\|\n]"  # '/ \ : * ? " < > |'
+    new_title = re.sub(r_str, "_", title)  # 替换为下划线
+    return new_title
 
 def update_config(config: dict):
     """
@@ -208,6 +212,8 @@ async def download_media(
                     file_name_id = f"{message.message_id}" + ' - ' + base
                     logger.info(f'augmented file name: {file_name_id}')
                     chat_title = message.chat.title
+                    chat_title=validate_title(chat_title)
+                    logger.info(f'chat_title is: {chat_title}')
                     upload=subprocess.run(f"fclone moveto '{file_name}' \
                         '{drive_name}:{{{drive_id}}}/{chat_title}/{datetime_dir_name}\
                         /{file_name_id}'\
